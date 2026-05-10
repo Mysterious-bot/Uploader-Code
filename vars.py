@@ -4,7 +4,7 @@ import os
 from os import environ
 
 API_ID = int(environ.get("API_ID", "34338736"))
-API_HASH = environ.get("API_HASH", "mongodb+srv://DemoArjun:0JGyLYySiCNxBmuW@cluster0.nln6lwr.mongodb.net/?appName=Cluster0")
+API_HASH = environ.get("API_HASH", "cb0624172e5db326489e1855a83d0c26")
 BOT_TOKEN = environ.get("BOT_TOKEN", "")
 
 OWNER = int(environ.get("OWNER", "8606649929"))

@@ -1,38 +1,34 @@
-# Use a Python 3.12.3 Alpine base image
 FROM python:3.12-alpine3.20
 
-# Set the working directory
 WORKDIR /app
 
-# Copy all files from the current directory to the container's /app directory
 COPY . .
 
-# Install necessary dependencies
 RUN apk add --no-cache \
     gcc \
-    libffi-dev \
     musl-dev \
+    libffi-dev \
     ffmpeg \
     aria2 \
-    make \
     g++ \
-    cmake && \
-    wget -q https://github.com/axiomatic-systems/Bento4/archive/v1.6.0-639.zip && \
-    unzip v1.6.0-639.zip && \
-    cd Bento4-1.6.0-639 && \
-    mkdir build && \
-    cd build && \
-    cmake .. && \
-    make -j$(nproc) && \
-    cp mp4decrypt /usr/local/bin/ &&\
-    cd ../.. && \
-    rm -rf Bento4-1.6.0-639 v1.6.0-639.zip
+    make \
+    cmake \
+    bash \
+    wget \
+    unzip
+
+# Install mp4decrypt (Bento4)
+RUN wget -O /tmp/bento4.zip https://www.bok.net/Bento4/binaries/Bento4-SDK-1-6-0-641.x86_64-unknown-linux.zip && \
+    unzip /tmp/bento4.zip -d /opt && \
+    cp /opt/Bento4-SDK-1-6-0-641.x86_64-unknown-linux/bin/mp4decrypt /usr/local/bin/ && \
+    chmod +x /usr/local/bin/mp4decrypt
 
 # Install Python dependencies
-RUN pip3 install --no-cache-dir --upgrade pip \
-    && pip3 install --no-cache-dir --upgrade -r sainibots.txt \
-    && python3 -m pip install -U yt-dlp
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Set the command to run the application
-CMD ["sh", "-c", "gunicorn app:app & python3 modules/main.py"]
+# Debug (optional)
+RUN ls -R /app
+
+# Start bot/app
+CMD ["python3", "modules/main.py"]
 
